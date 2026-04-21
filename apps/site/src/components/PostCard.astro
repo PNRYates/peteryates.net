@@ -2,13 +2,13 @@
 interface Props {
   title: string;
   description: string;
-  slug: string;
+  id: string;
   publishedAt: Date;
   tags?: string[];
   readingTime?: string;
 }
 
-const { title, description, slug, publishedAt, tags = [], readingTime } = Astro.props;
+const { title, description, id, publishedAt, tags = [], readingTime } = Astro.props;
 
 const date = publishedAt.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -25,7 +25,7 @@ const date = publishedAt.toLocaleDateString('en-US', {
     )}
   </div>
   <h2 class="text-lg font-semibold mb-1">
-    <a href={`/posts/${slug}`} class="hover:opacity-80 transition-opacity" style="color: var(--color-text);">
+    <a href={`/posts/${id}`} class="hover:opacity-80 transition-opacity" style="color: var(--color-text);">
       {title}
     </a>
   </h2>

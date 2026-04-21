@@ -8,7 +8,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const isDev = import.meta.env.DEV;
   const posts = await getCollection('posts', (e) => isDev || !e.data.draft);
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 };
@@ -29,7 +29,7 @@ const updated = post.data.updatedAt?.toLocaleDateString('en-US', {
 });
 
 const rt = readingTime(post.body ?? '');
-const ogImage = `/og/${post.slug}.png`;
+const ogImage = `/og/${post.id}.png`;
 ---
 
 <Base

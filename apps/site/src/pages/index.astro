@@ -33,7 +33,7 @@ const posts = allPosts
         <PostCard
           title={post.data.title}
           description={post.data.description}
-          slug={post.slug}
+          id={post.id}
           publishedAt={post.data.publishedAt}
           tags={post.data.tags}
           readingTime={readingTime(post.body ?? '')}
