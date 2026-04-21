@@ -6,7 +6,7 @@ RUN npm install -g pnpm
 WORKDIR /app
 
 # Copy workspace manifests first for layer caching
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* tsconfig.base.json ./
 COPY apps/site/package.json ./apps/site/package.json
 
 RUN pnpm install --frozen-lockfile --filter site
