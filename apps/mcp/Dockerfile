@@ -11,6 +11,9 @@ COPY apps/mcp/package.json ./apps/mcp/package.json
 RUN pnpm install --frozen-lockfile --filter mcp
 
 COPY apps/mcp ./apps/mcp
+# Content is baked in at build time so no shared volume is needed.
+# To use a runtime volume instead, omit this COPY and set CONTENT_DIR in Coolify.
+COPY apps/site/src/content ./apps/site/src/content
 
 RUN pnpm --filter mcp build
 
@@ -21,9 +24,10 @@ WORKDIR /app
 
 COPY --from=builder /app/apps/mcp/dist ./dist
 COPY --from=builder /app/apps/mcp/node_modules ./node_modules
+COPY --from=builder /app/apps/site/src/content ./content
 
-# Content directory — override CONTENT_DIR env var to point at a mounted volume
-# Default: /content (mount your site's src/content here in Coolify)
+# Content directory — baked in at /content by default.
+# Override with CONTENT_DIR env var to point at a mounted volume instead.
 ENV CONTENT_DIR=/content
 ENV PORT=3001
 
