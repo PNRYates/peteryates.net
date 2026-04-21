@@ -1,0 +1,64 @@
+---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  publishedAt?: Date;
+}
+
+const {
+  title,
+  description = 'Personal site of Peter Yates',
+  ogImage,
+  publishedAt,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const defaultOg = new URL('/og/default.png', Astro.site);
+const ogUrl = ogImage ? new URL(ogImage, Astro.site) : defaultOg;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title === 'Peter Yates' ? title : `${title} — Peter Yates`}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content={publishedAt ? 'article' : 'website'} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogUrl} />
+
+    {publishedAt && (
+      <meta property="article:published_time" content={publishedAt.toISOString()} />
+    )}
+
+    <link rel="alternate" type="application/rss+xml" title="Peter Yates" href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col">
+      <Nav />
+      <main class="flex-1 mx-auto w-full max-w-[720px] px-6 py-12">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { readingTime } from '../../lib/reading-time';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const isDev = import.meta.env.DEV;
+  const posts = await getCollection('posts', (e) => isDev || !e.data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+};
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const date = post.data.publishedAt.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const updated = post.data.updatedAt?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const rt = readingTime(post.body ?? '');
+const ogImage = `/og/${post.slug}.png`;
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  ogImage={ogImage}
+  publishedAt={post.data.publishedAt}
+>
+  <article>
+    <header class="mb-10">
+      {post.data.draft && (
+        <div class="text-xs font-semibold uppercase tracking-wider mb-4 px-2 py-1 inline-block rounded"
+          style="background: #b45309; color: #fef3c7;">
+          Draft
+        </div>
+      )}
+      <h1 class="text-2xl font-semibold mb-3 leading-snug" style="color: var(--color-text);">
+        {post.data.title}
+      </h1>
+      <div class="flex items-center gap-3 text-sm" style="color: var(--color-muted);">
+        <time datetime={post.data.publishedAt.toISOString()}>{date}</time>
+        <span>&middot;</span>
+        <span>{rt}</span>
+        {updated && (
+          <>
+            <span>&middot;</span>
+            <span>Updated {updated}</span>
+          </>
+        )}
+      </div>
+      {post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {post.data.tags.map((tag) => (
+            <a
+              href={`/tags/${tag}`}
+              class="text-xs px-2 py-0.5 rounded-full border transition-colors hover:opacity-80"
+              style="border-color: var(--color-border); color: var(--color-muted);"
+            >
+              {tag}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>

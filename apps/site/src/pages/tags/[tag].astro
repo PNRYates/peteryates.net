@@ -1,0 +1,46 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { readingTime } from '../../lib/reading-time';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const isDev = import.meta.env.DEV;
+  const posts = await getCollection('posts', (e) => isDev || !e.data.draft);
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+};
+
+interface Props {
+  tag: string;
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { tag, posts } = Astro.props;
+posts.sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+---
+
+<Base title={`#${tag}`} description={`Posts tagged with ${tag}`}>
+  <div class="flex items-baseline gap-3 mb-8">
+    <h1 class="text-2xl font-semibold" style="color: var(--color-text);">#{tag}</h1>
+    <span class="text-sm" style="color: var(--color-muted);">
+      {posts.length} post{posts.length !== 1 ? 's' : ''}
+    </span>
+  </div>
+
+  {posts.map((post) => (
+    <PostCard
+      title={post.data.title}
+      description={post.data.description}
+      slug={post.slug}
+      publishedAt={post.data.publishedAt}
+      tags={post.data.tags}
+      readingTime={readingTime(post.body ?? '')}
+    />
+  ))}
+</Base>

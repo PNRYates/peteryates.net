@@ -1,0 +1,29 @@
+---
+const nav = [
+  { label: 'Posts', href: '/posts' },
+  { label: 'Projects', href: '/projects' },
+  { label: 'Resources', href: '/resources' },
+  { label: 'About', href: '/about' },
+];
+
+const current = Astro.url.pathname;
+---
+
+<header class="border-b" style="border-color: var(--color-border);">
+  <nav class="mx-auto w-full max-w-[720px] px-6 py-4 flex items-center gap-6">
+    <a href="/" class="font-semibold text-sm" style="color: var(--color-text);">
+      Peter Yates
+    </a>
+    <div class="flex gap-5 ml-auto">
+      {nav.map(({ label, href }) => (
+        <a
+          href={href}
+          class={`text-sm transition-colors ${current.startsWith(href) ? '' : 'opacity-60 hover:opacity-100'}`}
+          style="color: var(--color-text);"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  </nav>
+</header>

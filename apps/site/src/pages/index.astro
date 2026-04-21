@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { readingTime } from '../lib/reading-time';
+
+const isDev = import.meta.env.DEV;
+const allPosts = await getCollection('posts', (e) => isDev || !e.data.draft);
+const posts = allPosts
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 5);
+---
+
+<Base title="Peter Yates">
+  <section class="mb-14">
+    <h1 class="text-2xl font-semibold mb-4" style="color: var(--color-text);">Peter Yates</h1>
+    <p class="leading-relaxed" style="color: var(--color-muted);">
+      Software engineer. I write about systems, tools, and things I find interesting.
+      Occasionally shipping <a href="/projects" style="color: var(--color-accent);">projects</a>.
+    </p>
+    <!-- Analytics placeholder: add your script tag here -->
+  </section>
+
+  <section>
+    <div class="flex items-baseline justify-between mb-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wider" style="color: var(--color-muted);">Recent posts</h2>
+      <a href="/posts" class="text-sm" style="color: var(--color-accent);">All posts &rarr;</a>
+    </div>
+    {posts.length === 0 ? (
+      <p class="text-sm" style="color: var(--color-muted);">No posts yet.</p>
+    ) : (
+      posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.slug}
+          publishedAt={post.data.publishedAt}
+          tags={post.data.tags}
+          readingTime={readingTime(post.body ?? '')}
+        />
+      ))
+    )}
+  </section>
+</Base>

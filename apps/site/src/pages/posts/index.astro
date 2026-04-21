@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { readingTime } from '../../lib/reading-time';
+
+const isDev = import.meta.env.DEV;
+const posts = await getCollection('posts', (e) => isDev || !e.data.draft);
+posts.sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+---
+
+<Base title="Posts" description="All posts by Peter Yates">
+  <h1 class="text-2xl font-semibold mb-8" style="color: var(--color-text);">Posts</h1>
+  {posts.length === 0 ? (
+    <p style="color: var(--color-muted);">Nothing here yet.</p>
+  ) : (
+    posts.map((post) => (
+      <PostCard
+        title={post.data.title}
+        description={post.data.description}
+        slug={post.slug}
+        publishedAt={post.data.publishedAt}
+        tags={post.data.tags}
+        readingTime={readingTime(post.body ?? '')}
+      />
+    ))
+  )}
+</Base>
