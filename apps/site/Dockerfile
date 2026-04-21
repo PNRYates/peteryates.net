@@ -22,4 +22,4 @@ FROM caddy:2-alpine
 COPY --from=builder /app/apps/site/dist /srv
 COPY apps/site/Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 80
+EXPOSE 3002
