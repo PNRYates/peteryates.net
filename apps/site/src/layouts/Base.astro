@@ -23,10 +23,22 @@ const ogUrl = ogImage ? new URL(ogImage, Astro.site) : defaultOg;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Apply saved theme before paint to avoid flash */}
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        const theme = stored === 'light' || stored === 'dark'
+          ? stored
+          : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
     <link rel="canonical" href={canonical} />
 
     <title>{title === 'Peter Yates' ? title : `${title} — Peter Yates`}</title>

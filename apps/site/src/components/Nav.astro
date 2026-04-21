@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from './ThemeToggle.astro';
+
 const nav = [
   { label: 'Posts', href: '/posts' },
   { label: 'Projects', href: '/projects' },
@@ -14,7 +16,7 @@ const current = Astro.url.pathname;
     <a href="/" class="font-semibold text-sm" style="color: var(--color-text);">
       Peter Yates
     </a>
-    <div class="flex gap-5 ml-auto">
+    <div class="flex items-center gap-5 ml-auto">
       {nav.map(({ label, href }) => (
         <a
           href={href}
@@ -24,6 +26,7 @@ const current = Astro.url.pathname;
           {label}
         </a>
       ))}
+      <ThemeToggle />
     </div>
   </nav>
 </header>

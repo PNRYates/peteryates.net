@@ -7,7 +7,14 @@
 @theme {
   --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+}
 
+/* ── Themes ─────────────────────────────────────────────────────────────────
+   Colors live on html[data-theme] so the JS toggle can swap them without
+   a flash. The inline script in Base.astro sets data-theme before paint.
+   Dark is the default; light overrides. */
+
+html[data-theme="dark"] {
   --color-bg: #0d1117;
   --color-surface: #161b22;
   --color-border: #30363d;
@@ -17,6 +24,18 @@
   --color-accent-muted: #388bfd26;
 }
 
+html[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-border: #d0d7de;
+  --color-text: #1f2328;
+  --color-muted: #57606a;
+  --color-accent: #0969da;
+  --color-accent-muted: #0969da1a;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────────*/
+
 html {
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -24,13 +43,15 @@ html {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 body {
   min-height: 100vh;
 }
 
-/* Prose styles for post bodies */
+/* ── Prose ──────────────────────────────────────────────────────────────────*/
+
 .prose {
   max-width: 100%;
   color: var(--color-text);
@@ -138,5 +159,5 @@ body {
   font-weight: 600;
 }
 
-/* KaTeX overrides for dark theme */
+/* KaTeX inherits body color via currentColor */
 .katex { color: var(--color-text); }

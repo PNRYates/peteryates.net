@@ -2,7 +2,7 @@
 title: "peteryates.net"
 description: "This site. Personal blog and project log, built with Astro and deployed on Coolify."
 status: active
-repo: "https://github.com/peteryates/blog"
+repo: "https://github.com/PNRYates/blog"
 url: "https://peteryates.net"
 tech: ["Astro", "TypeScript", "Tailwind v4", "MDX", "Caddy", "Coolify"]
 startedAt: 2024-01-01
