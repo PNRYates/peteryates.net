@@ -1,4 +1,6 @@
 node_modules
+# Astro content layer data store (persists across builds, not source of truth)
+**/node_modules/.astro/
 dist
 .astro
 .env
