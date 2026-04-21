@@ -1,0 +1,16 @@
+{
+  "name": "blog",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter site dev",
+    "build": "pnpm --filter site build",
+    "preview": "pnpm --filter site preview",
+    "dev:mcp": "pnpm --filter mcp dev",
+    "build:mcp": "pnpm --filter mcp build"
+  },
+  "packageManager": "pnpm@10.33.0"
+}
