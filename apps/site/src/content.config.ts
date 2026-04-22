@@ -26,15 +26,4 @@ const projects = defineCollection({
   }),
 });
 
-const resources = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resources' }),
-  schema: z.object({
-    title: z.string(),
-    category: z.string(),
-    url: z.string().url(),
-    description: z.string(),
-    addedAt: z.coerce.date(),
-  }),
-});
-
-export const collections = { posts, projects, resources };
+export const collections = { posts, projects };
