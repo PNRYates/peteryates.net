@@ -26,4 +26,13 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { posts, projects };
+const photography = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/photography' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    url: z.string().url(),
+  }),
+});
+
+export const collections = { posts, projects, photography };
