@@ -45,9 +45,9 @@ const formatDate = (date: Date) =>
         <h2 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-muted);">
           {statusLabel[status]}
         </h2>
-        <div class="flex flex-col gap-1">
+        <div class="-mx-3 flex flex-col gap-1 sm:mx-0">
           {grouped[status]?.map((project) => (
-            <article class="py-5 border-b last:border-b-0" style="border-color: var(--color-border);">
+            <article class="px-3 py-5 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
               <div class="flex items-start justify-between gap-4">
                 <div>
                   <h3 class="font-semibold mb-1" style="color: var(--color-text);">
@@ -86,10 +86,10 @@ const formatDate = (date: Date) =>
   </div>
 
   <section id="photography" data-tab-panel="photography" hidden>
-    <div class="flex flex-col gap-1">
+    <div class="-mx-3 flex flex-col gap-1 sm:mx-0">
       {photography.map((gallery) => (
-        <article class="py-5 border-b last:border-b-0" style="border-color: var(--color-border);">
-          <div class="flex items-center justify-between gap-5">
+        <article class="px-3 py-5 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
+          <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:gap-5">
             <div>
               <h3 class="font-semibold mb-1" style="color: var(--color-text);">
                 <a href={gallery.data.url} target="_blank" rel="noopener noreferrer"
