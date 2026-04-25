@@ -30,7 +30,7 @@ const formatDate = (date: Date) =>
 <Base title="Projects" description="Projects by Peter Yates">
   <h1 class="text-2xl font-semibold mb-8" style="color: var(--color-text);">Projects</h1>
 
-  <div class="mb-5 flex border-b" style="border-color: var(--color-border);">
+  <div class="mb-3 flex border-b" style="border-color: var(--color-border);">
     <a href="#projects" class="project-tab px-3 py-2 text-sm font-medium" data-tab-link="projects">
       Projects
     </a>
@@ -42,12 +42,14 @@ const formatDate = (date: Date) =>
   <div id="projects" data-tab-panel="projects">
     {statusOrder.map((status) => grouped[status]?.length > 0 && (
       <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-muted);">
-          {statusLabel[status]}
-        </h2>
+        {status !== 'active' && (
+          <h2 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-muted);">
+            {statusLabel[status]}
+          </h2>
+        )}
         <div class="-mx-3 flex flex-col gap-1 sm:mx-0">
           {grouped[status]?.map((project) => (
-            <article class="px-3 py-5 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
+            <article class="px-3 py-4 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
               <div class="flex items-start justify-between gap-4">
                 <div>
                   <h3 class="font-semibold mb-1" style="color: var(--color-text);">
@@ -88,7 +90,7 @@ const formatDate = (date: Date) =>
   <section id="photography" data-tab-panel="photography" hidden>
     <div class="-mx-3 flex flex-col gap-1 sm:mx-0">
       {photography.map((gallery) => (
-        <article class="px-3 py-5 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
+        <article class="px-3 py-4 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
           <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:gap-5">
             <div>
               <h3 class="font-semibold mb-1" style="color: var(--color-text);">
