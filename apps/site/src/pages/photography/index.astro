@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const photography = await getCollection('photography');
+photography.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat('en-AU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+---
+
+<Base title="Photography" description="Photography galleries by Peter Yates">
+  <h1 class="text-2xl font-semibold mb-8" style="color: var(--color-text);">Photography</h1>
+
+  <div class="-mx-3 flex flex-col gap-1 sm:mx-0">
+    {photography.map((gallery) => (
+      <article class="px-3 py-4 border-b last:border-b-0 sm:px-0" style="border-color: var(--color-border);">
+        <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:gap-5">
+          <div>
+            <h3 class="font-semibold mb-1" style="color: var(--color-text);">
+              <a href={gallery.data.url} target="_blank" rel="noopener noreferrer"
+                class="hover:opacity-80 transition-opacity">
+                {gallery.data.title}
+              </a>
+            </h3>
+            <p class="text-sm" style="color: var(--color-muted);">
+              {formatDate(gallery.data.date)}
+            </p>
+          </div>
+          <a href={gallery.data.url} target="_blank" rel="noopener noreferrer"
+            class="gallery-button shrink-0 text-sm font-medium px-4 py-2 rounded border transition-opacity hover:opacity-80"
+            style="border-color: var(--color-border); color: var(--color-accent); background: var(--color-surface);">
+            Gallery &rarr;
+          </a>
+        </div>
+      </article>
+    ))}
+  </div>
+</Base>
