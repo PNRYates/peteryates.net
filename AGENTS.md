@@ -29,5 +29,8 @@
 
 - Follow existing Astro, TypeScript, and Tailwind v4 patterns.
 - Keep content changes in the existing Markdown/MDX frontmatter style.
+- When importing documents with citations, preserve them as native Markdown
+  footnotes (`[^1]` references with matching `[^1]:` definitions); do not use
+  Unicode superscript markers plus a manually numbered notes list.
 - Do not replace pnpm lockfile or package-manager metadata with npm or yarn
   equivalents.
