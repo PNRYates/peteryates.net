@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import FootnotePreviews from '../../components/FootnotePreviews.astro';
 import { readingTime } from '../../lib/reading-time';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -78,5 +79,6 @@ const ogImage = `/og/${post.id}.png`;
     <div class="prose">
       <Content />
     </div>
+    <FootnotePreviews />
   </article>
 </Base>
