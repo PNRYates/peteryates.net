@@ -35,4 +35,54 @@ const photography = defineCollection({
   }),
 });
 
-export const collections = { posts, projects, photography };
+const homePage = defineCollection({
+  loader: glob({ pattern: 'home.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    intro: z.string().default(''),
+    showLatestGallery: z.boolean().default(true),
+    featuredGallery: z.string().optional(),
+    latestGalleryHeading: z.string(),
+    allPhotographyLabel: z.string(),
+    galleryCta: z.string(),
+    recentPostsHeading: z.string(),
+    allPostsLabel: z.string(),
+    emptyPostsMessage: z.string(),
+    recentPostCount: z.number().int().min(1).max(20).default(5),
+  }),
+});
+
+const aboutPage = defineCollection({
+  loader: glob({ pattern: 'about.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
+});
+
+const siteSettings = defineCollection({
+  loader: glob({ pattern: 'site.md', base: './src/content/settings' }),
+  schema: z.object({
+    siteName: z.string(),
+    defaultDescription: z.string(),
+    footerName: z.string(),
+    navigation: z.array(z.object({
+      label: z.string(),
+      href: z.string(),
+    })),
+    socialLinks: z.array(z.object({
+      label: z.string(),
+      href: z.string(),
+    })).default([]),
+  }),
+});
+
+export const collections = {
+  posts,
+  projects,
+  photography,
+  homePage,
+  aboutPage,
+  siteSettings,
+};

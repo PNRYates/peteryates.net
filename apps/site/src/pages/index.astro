@@ -1,17 +1,23 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PostCard from '../components/PostCard.astro';
 import { readingTime } from '../lib/reading-time';
 
 const isDev = import.meta.env.DEV;
+const homePage = await getEntry('homePage', 'home');
+if (!homePage) throw new Error('Homepage content is missing');
+
 const allPosts = await getCollection('posts', (e) => isDev || !e.data.draft);
 const posts = allPosts
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
-  .slice(0, 5);
+  .slice(0, homePage.data.recentPostCount);
 
 const photography = await getCollection('photography');
-const latestGallery = photography.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())[0];
+const sortedPhotography = photography.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const latestGallery = homePage.data.featuredGallery
+  ? sortedPhotography.find((gallery) => gallery.id === homePage.data.featuredGallery)
+  : sortedPhotography[0];
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat('en-AU', {
@@ -21,22 +27,22 @@ const formatDate = (date: Date) =>
   }).format(date);
 ---
 
-<Base title="Peter Yates">
+<Base title={homePage.data.title} description={homePage.data.description}>
   <section class="mb-14">
-    <h1 class="text-2xl font-semibold mb-4" style="color: var(--color-text);">Peter Yates</h1>
+    <h1 class="text-2xl font-semibold mb-4" style="color: var(--color-text);">{homePage.data.title}</h1>
     <p class="leading-relaxed" style="color: var(--color-muted);">
-      <!-- Bio goes here -->
+      {homePage.data.intro}
     </p>
     <!-- Analytics placeholder: add your script tag here -->
   </section>
 
-  {latestGallery && (
+  {homePage.data.showLatestGallery && latestGallery && (
     <section class="mb-14">
       <div class="flex items-baseline justify-between mb-4">
         <h2 class="text-sm font-semibold uppercase tracking-wider" style="color: var(--color-muted);">
-          Latest gallery
+          {homePage.data.latestGalleryHeading}
         </h2>
-        <a href="/photography" class="text-sm" style="color: var(--color-accent);">All photography &rarr;</a>
+        <a href="/photography" class="text-sm" style="color: var(--color-accent);">{homePage.data.allPhotographyLabel} &rarr;</a>
       </div>
       <article class="px-3 py-4 border-y sm:px-0" style="border-color: var(--color-border);">
         <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:gap-5">
@@ -54,7 +60,7 @@ const formatDate = (date: Date) =>
           <a href={latestGallery.data.url} target="_blank" rel="noopener noreferrer"
             class="shrink-0 text-sm font-medium px-4 py-2 rounded border transition-opacity hover:opacity-80"
             style="border-color: var(--color-border); color: var(--color-accent); background: var(--color-surface);">
-            Gallery &rarr;
+            {homePage.data.galleryCta} &rarr;
           </a>
         </div>
       </article>
@@ -63,11 +69,11 @@ const formatDate = (date: Date) =>
 
   <section>
     <div class="flex items-baseline justify-between mb-4">
-      <h2 class="text-sm font-semibold uppercase tracking-wider" style="color: var(--color-muted);">Recent posts</h2>
-      {posts.length > 0 && <a href="/posts" class="text-sm" style="color: var(--color-accent);">All posts &rarr;</a>}
+      <h2 class="text-sm font-semibold uppercase tracking-wider" style="color: var(--color-muted);">{homePage.data.recentPostsHeading}</h2>
+      {posts.length > 0 && <a href="/posts" class="text-sm" style="color: var(--color-accent);">{homePage.data.allPostsLabel} &rarr;</a>}
     </div>
     {posts.length === 0 ? (
-      <p class="text-sm" style="color: var(--color-muted);">No posts yet.</p>
+      <p class="text-sm" style="color: var(--color-muted);">{homePage.data.emptyPostsMessage}</p>
     ) : (
       posts.map((post) => (
         <PostCard

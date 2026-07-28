@@ -1,12 +1,12 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 
-const nav = [
-  { label: 'Posts', href: '/posts' },
-  { label: 'Photography', href: '/photography' },
-  { label: 'Projects', href: '/projects' },
-  { label: 'About', href: '/about' },
-];
+interface Props {
+  siteName: string;
+  navigation: Array<{ label: string; href: string }>;
+}
+
+const { siteName, navigation } = Astro.props;
 
 const current = Astro.url.pathname;
 ---
@@ -16,16 +16,16 @@ const current = Astro.url.pathname;
     <a href="/" class="flex items-center gap-2.5 group shrink-0" aria-label="Home">
       <img
         src="/logo.png"
-        alt="Peter Yates"
+        alt={siteName}
         width="28"
         height="28"
         class="rounded-full ring-1 opacity-90 group-hover:opacity-100 transition-opacity"
         style="ring-color: var(--color-border);"
       />
-      <span class="font-semibold text-sm" style="color: var(--color-text);">Peter Yates</span>
+      <span class="font-semibold text-sm" style="color: var(--color-text);">{siteName}</span>
     </a>
     <div class="flex items-center gap-5 ml-auto">
-      {nav.map(({ label, href }) => (
+      {navigation.map(({ label, href }) => (
         <a
           href={href}
           class={`text-sm transition-opacity ${current.startsWith(href) ? '' : 'opacity-60 hover:opacity-100'}`}
