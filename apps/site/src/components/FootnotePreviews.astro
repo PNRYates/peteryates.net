@@ -1,0 +1,128 @@
+<div class="footnote-preview" id="footnote-preview" role="tooltip" hidden></div>
+
+<script>
+  const preview = document.querySelector<HTMLElement>('#footnote-preview');
+  const references = document.querySelectorAll<HTMLAnchorElement>('.prose [data-footnote-ref]');
+
+  if (preview && references.length > 0) {
+    let activeReference: HTMLAnchorElement | null = null;
+    let hideTimer: number | undefined;
+    let lastPointerType = 'mouse';
+
+    const cancelHide = () => window.clearTimeout(hideTimer);
+
+    const footnoteFor = (reference: HTMLAnchorElement) => {
+      const target = reference.getAttribute('href');
+      if (!target?.startsWith('#')) return null;
+
+      try {
+        return document.getElementById(decodeURIComponent(target.slice(1)));
+      } catch {
+        return null;
+      }
+    };
+
+    const positionPreview = (reference: HTMLAnchorElement) => {
+      const referenceRect = reference.getBoundingClientRect();
+      const previewRect = preview.getBoundingClientRect();
+      const gap = 10;
+      const edge = 12;
+
+      const left = Math.min(
+        window.innerWidth - previewRect.width - edge,
+        Math.max(edge, referenceRect.left + referenceRect.width / 2 - previewRect.width / 2),
+      );
+      const top = referenceRect.top >= previewRect.height + gap + edge
+        ? referenceRect.top - previewRect.height - gap
+        : referenceRect.bottom + gap;
+
+      preview.style.left = `${left}px`;
+      preview.style.top = `${top}px`;
+    };
+
+    const showPreview = (reference: HTMLAnchorElement) => {
+      const footnote = footnoteFor(reference);
+      if (!footnote) return;
+
+      cancelHide();
+      const content = footnote.cloneNode(true) as HTMLElement;
+      content.querySelectorAll('[data-footnote-backref]').forEach((backlink) => backlink.remove());
+
+      preview.replaceChildren(...content.childNodes);
+      preview.hidden = false;
+      activeReference = reference;
+      positionPreview(reference);
+      reference.setAttribute('aria-expanded', 'true');
+    };
+
+    const hidePreview = () => {
+      if (activeReference) activeReference.removeAttribute('aria-expanded');
+      preview.hidden = true;
+      preview.replaceChildren();
+      activeReference = null;
+    };
+
+    const scheduleHide = () => {
+      cancelHide();
+      hideTimer = window.setTimeout(hidePreview, 120);
+    };
+
+    const repositionPreview = () => {
+      if (!activeReference || preview.hidden) return;
+
+      const referenceRect = activeReference.getBoundingClientRect();
+      if (referenceRect.bottom < 0 || referenceRect.top > window.innerHeight) {
+        hidePreview();
+        return;
+      }
+
+      positionPreview(activeReference);
+    };
+
+    references.forEach((reference) => {
+      reference.setAttribute('aria-haspopup', 'true');
+
+      reference.addEventListener('pointerdown', (event) => {
+        lastPointerType = event.pointerType;
+      });
+      reference.addEventListener('keydown', () => {
+        lastPointerType = 'keyboard';
+      });
+      reference.addEventListener('mouseenter', () => showPreview(reference));
+      reference.addEventListener('mouseleave', scheduleHide);
+      reference.addEventListener('focus', () => showPreview(reference));
+      reference.addEventListener('blur', scheduleHide);
+      reference.addEventListener('click', (event) => {
+        if (lastPointerType === 'mouse' || lastPointerType === 'keyboard') return;
+
+        if (activeReference !== reference || preview.hidden) {
+          event.preventDefault();
+          showPreview(reference);
+        } else {
+          hidePreview();
+        }
+      });
+    });
+
+    preview.addEventListener('mouseenter', cancelHide);
+    preview.addEventListener('mouseleave', scheduleHide);
+    preview.addEventListener('focusin', cancelHide);
+    preview.addEventListener('focusout', scheduleHide);
+
+    document.addEventListener('pointerdown', (event) => {
+      if (
+        !preview.hidden
+        && event.target instanceof Node
+        && !preview.contains(event.target)
+        && !activeReference?.contains(event.target)
+      ) {
+        hidePreview();
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !preview.hidden) hidePreview();
+    });
+    window.addEventListener('scroll', repositionPreview, { passive: true });
+    window.addEventListener('resize', repositionPreview);
+  }
+</script>
