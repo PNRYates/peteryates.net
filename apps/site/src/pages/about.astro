@@ -1,22 +1,16 @@
 ---
+import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+
+const aboutPage = await getEntry('aboutPage', 'about');
+if (!aboutPage) throw new Error('About page content is missing');
+
+const { Content } = await render(aboutPage);
 ---
 
-<Base title="About" description="About Peter Yates">
-  <h1 class="text-2xl font-semibold mb-8" style="color: var(--color-text);">About</h1>
+<Base title={aboutPage.data.title} description={aboutPage.data.description}>
+  <h1 class="text-2xl font-semibold mb-8" style="color: var(--color-text);">{aboutPage.data.title}</h1>
   <div class="prose">
-    <p>I'm Peter. Year 12 at Knox Grammar in Sydney, finishing in 2026, then Commerce or Commerce/Law at UNSW or USyd.</p>
-    <p>This site is mostly long-form writing on geopolitics and economic history, plus the occasional homelab writeup.</p>
-    <h2>Currently</h2>
-    <ul>
-      <li>2026 Prefect at Knox, Wellbeing portfolio</li>
-      <li>Debating in NSW (state callbacks 2025)</li>
-      <li>Writing a piece on Iran's currency crisis for a Dante-themed literary magazine</li>
-    </ul>
-    <h2>Elsewhere</h2>
-    <ul>
-      <li><a href="mailto:peter@peteryates.net">peter@peteryates.net</a></li>
-      <li><a href="https://www.linkedin.com/in/peteryates-sydney">LinkedIn</a></li>
-    </ul>
+    <Content />
   </div>
 </Base>

@@ -60,6 +60,17 @@ Post body here.
 
 Draft posts (`draft: true`) are visible in dev mode but excluded from production builds.
 
+### Content editor
+
+Run the site locally with `pnpm dev`, then open
+`http://localhost:4321/keystatic` to manage posts, projects, photography, the
+homepage, the About page, and global site settings through the Keystatic editor.
+The editor writes directly to the Markdown files in this repository, so review
+and commit those changes normally.
+
+The editor is intentionally available only in local development. Production
+remains a static site and does not expose an admin route.
+
 ## MCP server
 
 The MCP server reads the same content at runtime. In development it reads from
