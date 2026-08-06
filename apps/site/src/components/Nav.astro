@@ -12,7 +12,7 @@ const current = Astro.url.pathname;
 ---
 
 <header class="border-b" style="border-color: var(--color-border);">
-  <nav class="mx-auto w-full max-w-[720px] px-6 py-4 flex items-center gap-6">
+  <nav class="mx-auto flex w-full max-w-[720px] flex-wrap items-center gap-x-5 gap-y-3 px-6 py-4">
     <a href="/" class="flex items-center gap-2.5 group shrink-0" aria-label="Home">
       <img
         src="/logo.png"
@@ -24,7 +24,7 @@ const current = Astro.url.pathname;
       />
       <span class="font-semibold text-sm" style="color: var(--color-text);">{siteName}</span>
     </a>
-    <div class="flex items-center gap-5 ml-auto">
+    <div class="order-last flex w-full items-center justify-between gap-3 sm:order-none sm:ml-auto sm:w-auto sm:justify-start sm:gap-5">
       {navigation.map(({ label, href }) => (
         <a
           href={href}
@@ -34,6 +34,8 @@ const current = Astro.url.pathname;
           {label}
         </a>
       ))}
+    </div>
+    <div class="ml-auto sm:ml-0">
       <ThemeToggle />
     </div>
   </nav>
