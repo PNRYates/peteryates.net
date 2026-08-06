@@ -7,7 +7,7 @@ tags:
   - writing
 draft: false
 ---
-Depending on the context, I don't mind using AI to write things. A lot of my classmates would do well to run their emails through a chatbot first, just to get some politeness. But I really, *really* dislike reading AI-written articles and other writing that has some real meaning to it. Two examples from today:
+Depending on the context, I don't mind using AI to write things. A lot of my classmates would do well to run their emails through chat first, just to get some politeness. But I really, *really* dislike reading AI generated/assisted content that attempts to have some real intellectual/emotional meaning to it. Two examples today:
 
 1. A LinkedIn post from the mother of someone at my school, with a supposed lesson along the lines of “you don't realise how special the ordinary moments are until they end”. While LinkedIn is obviously a slopfest, and I admit to using LLMs for some posts that don't have a call to action or deeper meaning, pseudo-intellectual messages like that give me a sour taste when they come from a bot.
 2. [This speech on AI agents and competition policy](https://ministers.treasury.gov.au/ministers/andrew-leigh-2025/speeches/address-invisible-mind-economics-ai-conference-economic) by Andrew Leigh, an Australian MP. About halfway through reading it, some parts of my brain were telling me it could have been LLM-written. I wasn't sure, because it was a speech and thus likely to have the sort of “mic drop every sentence” language that LLMs produce because of the form. But alas, it was indeed mostly written with AI, at least according to [Pangram](https://www.pangram.com/), which I trust.
