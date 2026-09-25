@@ -27,6 +27,11 @@ const pageDescription = description ?? siteSettings.data.defaultDescription;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const defaultOg = new URL('/og/default.png', Astro.site);
 const ogUrl = ogImage ? new URL(ogImage, Astro.site) : defaultOg;
+
+// Umami analytics: only emitted in production builds.
+const umamiWebsiteId = '1397afd6-8fa6-47ae-98c6-e90b567e8d59';
+const umamiScriptUrl = 'https://analytics.peteryates.net/script.js';
+const enableAnalytics = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -70,6 +75,16 @@ const ogUrl = ogImage ? new URL(ogImage, Astro.site) : defaultOg;
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <link rel="icon" type="image/png" href="/logo.png" />
+
+    {enableAnalytics && (
+      <script
+        is:inline
+        defer
+        src={umamiScriptUrl}
+        data-website-id={umamiWebsiteId}
+        data-domains={Astro.site?.hostname}
+      ></script>
+    )}
   </head>
   <body>
     <div class="min-h-screen flex flex-col">

@@ -144,7 +144,8 @@ MCP image on each content change.
   as a peer dependency for satori's OG image generation.
 - **Tailwind v4** uses the Vite plugin (`@tailwindcss/vite`) rather than
   `@astrojs/tailwind`, which targets v3.
-- **Analytics placeholder** is noted in `src/pages/index.astro` — add your script
-  tag there.
+- **Analytics** is Umami, injected in `src/layouts/Base.astro` for production
+  builds with the website ID hardcoded there. `data-domains` limits
+  tracking to the production hostname, so previews and local builds don't count.
 - **Draft filtering** happens at collection load time via `getCollection` filter.
   No special build flag needed; `import.meta.env.DEV` handles it.
