@@ -1,0 +1,137 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const headshotsPage = await getEntry('headshotsPage', 'headshots');
+if (!headshotsPage) throw new Error('Headshots page content is missing');
+
+const { title, description, tagline, location, contactEmail, packages, steps, faq, photos } = headshotsPage.data;
+
+// Packages without a Cal.com link fall back to a prefilled booking email.
+const bookingHref = (pkg: (typeof packages)[number]) => {
+  if (pkg.bookingUrl) return pkg.bookingUrl;
+  const subject = `Headshot booking: ${pkg.name} ($${pkg.price})`;
+  const body = `Hi Peter,\n\nI'd like to book a ${pkg.name} headshot session.\n\nName:\nPreferred dates and times:\nPhone:\n`;
+  return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
+
+const lowestPrice = Math.min(...packages.map((pkg) => pkg.price));
+---
+
+<Base title={title} description={description}>
+  <section class="mb-14">
+    <h1 class="text-3xl font-semibold mb-4" style="color: var(--color-text);">{title}</h1>
+    <p class="text-lg mb-6" style="color: var(--color-muted);">{tagline}</p>
+    <div class="flex flex-wrap items-center gap-3">
+      <a href="#packages"
+        data-umami-event="headshot-cta-click" data-umami-event-source="hero"
+        class="text-sm font-medium px-5 py-2.5 rounded transition-opacity hover:opacity-85"
+        style="background: var(--color-accent); color: var(--color-bg);">
+        Book from ${lowestPrice}
+      </a>
+      <span class="text-sm" style="color: var(--color-muted);">{location}</span>
+    </div>
+  </section>
+
+  {photos.length > 0 && (
+    <section class="mb-14" aria-label="Example headshots">
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {photos.map((photo) => (
+          <img src={photo.src} alt={photo.alt} loading="lazy"
+            class="aspect-[4/5] w-full rounded-lg object-cover"
+            style="background: var(--color-surface);" />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section id="packages" class="mb-14 scroll-mt-6">
+    <h2 class="text-xl font-semibold mb-6" style="color: var(--color-text);">Packages</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {packages.map((pkg) => (
+        <article class="flex flex-col rounded-lg border p-5"
+          style={`border-color: ${pkg.highlighted ? 'var(--color-accent)' : 'var(--color-border)'}; background: var(--color-surface);`}>
+          <div class="mb-4 flex items-baseline justify-between gap-3">
+            <h3 class="font-semibold" style="color: var(--color-text);">{pkg.name}</h3>
+            {pkg.highlighted && (
+              <span class="text-xs font-medium px-2 py-0.5 rounded"
+                style="background: var(--color-accent-muted); color: var(--color-accent);">
+                Best value
+              </span>
+            )}
+          </div>
+          <p class="mb-1">
+            <span class="text-3xl font-semibold" style="color: var(--color-text);">${pkg.price}</span>
+            <span class="text-sm" style="color: var(--color-muted);"> AUD</span>
+          </p>
+          <p class="text-sm mb-4" style="color: var(--color-muted);">{pkg.duration} &middot; {pkg.delivery}</p>
+          <ul class="mb-6 flex-1 space-y-2 text-sm" style="color: var(--color-text);">
+            {pkg.features.map((feature) => (
+              <li class="flex gap-2">
+                <span aria-hidden="true" style="color: var(--color-accent);">&#10003;</span>
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+          <a href={bookingHref(pkg)}
+            target={pkg.bookingUrl ? '_blank' : undefined}
+            rel={pkg.bookingUrl ? 'noopener noreferrer' : undefined}
+            data-umami-event="headshot-book-click" data-umami-event-package={pkg.name}
+            class="text-center text-sm font-medium px-4 py-2.5 rounded border transition-opacity hover:opacity-85"
+            style={pkg.highlighted
+              ? 'background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg);'
+              : 'border-color: var(--color-border); color: var(--color-accent); background: var(--color-bg);'}>
+            Book {pkg.name}
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {steps.length > 0 && (
+    <section class="mb-14">
+      <h2 class="text-xl font-semibold mb-6" style="color: var(--color-text);">How it works</h2>
+      <ol class="space-y-5">
+        {steps.map((step, index) => (
+          <li class="flex gap-4">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
+              style="background: var(--color-accent-muted); color: var(--color-accent);">
+              {index + 1}
+            </span>
+            <div>
+              <h3 class="font-semibold mb-1" style="color: var(--color-text);">{step.title}</h3>
+              <p class="text-sm" style="color: var(--color-muted);">{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  {faq.length > 0 && (
+    <section class="mb-14">
+      <h2 class="text-xl font-semibold mb-4" style="color: var(--color-text);">FAQ</h2>
+      <div>
+        {faq.map((item) => (
+          <details class="border-b py-4" style="border-color: var(--color-border);">
+            <summary class="cursor-pointer font-medium" style="color: var(--color-text);">{item.question}</summary>
+            <p class="mt-2 text-sm" style="color: var(--color-muted);">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="rounded-lg border p-6 text-center" style="border-color: var(--color-border); background: var(--color-surface);">
+    <h2 class="text-lg font-semibold mb-2" style="color: var(--color-text);">Questions first?</h2>
+    <p class="text-sm mb-4" style="color: var(--color-muted);">
+      Email <a href={`mailto:${contactEmail}`} style="color: var(--color-accent);" data-umami-event="headshot-email-click">{contactEmail}</a> and I'll get back to you within a day.
+    </p>
+    <a href="#packages"
+      data-umami-event="headshot-cta-click" data-umami-event-source="footer"
+      class="inline-block text-sm font-medium px-5 py-2.5 rounded transition-opacity hover:opacity-85"
+      style="background: var(--color-accent); color: var(--color-bg);">
+      See packages
+    </a>
+  </section>
+</Base>

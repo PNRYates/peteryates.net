@@ -61,6 +61,38 @@ const aboutPage = defineCollection({
   }),
 });
 
+const headshotsPage = defineCollection({
+  loader: glob({ pattern: 'headshots.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    tagline: z.string(),
+    location: z.string(),
+    contactEmail: z.string().email(),
+    packages: z.array(z.object({
+      name: z.string(),
+      price: z.number(),
+      duration: z.string(),
+      delivery: z.string(),
+      highlighted: z.boolean().default(false),
+      bookingUrl: z.string().url().or(z.literal('')).default(''),
+      features: z.array(z.string()).default([]),
+    })),
+    steps: z.array(z.object({
+      title: z.string(),
+      body: z.string(),
+    })).default([]),
+    faq: z.array(z.object({
+      question: z.string(),
+      answer: z.string(),
+    })).default([]),
+    photos: z.array(z.object({
+      src: z.string(),
+      alt: z.string(),
+    })).default([]),
+  }),
+});
+
 const siteSettings = defineCollection({
   loader: glob({ pattern: 'site.md', base: './src/content/settings' }),
   schema: z.object({
@@ -84,5 +116,6 @@ export const collections = {
   photography,
   homePage,
   aboutPage,
+  headshotsPage,
   siteSettings,
 };

@@ -9,6 +9,8 @@ navigation:
     href: /photography
   - label: Projects
     href: /projects
+  - label: Headshots
+    href: /headshots
   - label: About
     href: /about
 socialLinks:

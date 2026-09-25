@@ -204,6 +204,122 @@ export default config({
         }),
       },
     }),
+    headshots: singleton({
+      label: 'Headshots page',
+      path: 'src/content/pages/headshots',
+      format: { contentField: 'emptyContent' },
+      schema: {
+        title: fields.text({
+          label: 'Page title',
+          validation: { isRequired: true },
+        }),
+        description: fields.text({
+          label: 'Meta description',
+          multiline: true,
+          validation: { isRequired: true },
+        }),
+        tagline: fields.text({
+          label: 'Tagline',
+          multiline: true,
+          validation: { isRequired: true },
+        }),
+        location: fields.text({
+          label: 'Location',
+          multiline: true,
+          validation: { isRequired: true },
+        }),
+        contactEmail: fields.text({
+          label: 'Contact email',
+          description: 'Used for booking when a package has no booking link.',
+          validation: { isRequired: true },
+        }),
+        packages: fields.array(
+          fields.object({
+            name: fields.text({
+              label: 'Name',
+              validation: { isRequired: true },
+            }),
+            price: fields.integer({
+              label: 'Price (AUD)',
+              validation: { isRequired: true, min: 0 },
+            }),
+            duration: fields.text({
+              label: 'Duration',
+              validation: { isRequired: true },
+            }),
+            delivery: fields.text({
+              label: 'Delivery time',
+              validation: { isRequired: true },
+            }),
+            highlighted: fields.checkbox({
+              label: 'Highlight this package',
+              defaultValue: false,
+            }),
+            bookingUrl: fields.text({
+              label: 'Booking link',
+              description: 'Cal.com event link. Leave empty to book by email.',
+            }),
+            features: listOfText('Features', 'Feature'),
+          }),
+          {
+            label: 'Packages',
+            itemLabel: ({ fields }) => fields.name.value || 'Package',
+          },
+        ),
+        steps: fields.array(
+          fields.object({
+            title: fields.text({
+              label: 'Title',
+              validation: { isRequired: true },
+            }),
+            body: fields.text({
+              label: 'Body',
+              multiline: true,
+              validation: { isRequired: true },
+            }),
+          }),
+          {
+            label: 'How it works',
+            itemLabel: ({ fields }) => fields.title.value || 'Step',
+          },
+        ),
+        faq: fields.array(
+          fields.object({
+            question: fields.text({
+              label: 'Question',
+              validation: { isRequired: true },
+            }),
+            answer: fields.text({
+              label: 'Answer',
+              multiline: true,
+              validation: { isRequired: true },
+            }),
+          }),
+          {
+            label: 'FAQ',
+            itemLabel: ({ fields }) => fields.question.value || 'Question',
+          },
+        ),
+        photos: fields.array(
+          fields.object({
+            src: fields.text({
+              label: 'Image path or URL',
+              description: 'e.g. /headshots/example-1.jpg in the public folder.',
+              validation: { isRequired: true },
+            }),
+            alt: fields.text({
+              label: 'Alt text',
+              validation: { isRequired: true },
+            }),
+          }),
+          {
+            label: 'Example photos',
+            itemLabel: ({ fields }) => fields.alt.value || 'Photo',
+          },
+        ),
+        emptyContent: fields.emptyContent({ extension: 'md' }),
+      },
+    }),
     siteSettings: singleton({
       label: 'Site settings',
       path: 'src/content/settings/site',
