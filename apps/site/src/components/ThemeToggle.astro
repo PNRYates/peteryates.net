@@ -43,5 +43,6 @@
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', next);
     applyTheme(next);
+    window.umami?.track('theme-toggle', { theme: next });
   });
 </script>

@@ -13,9 +13,9 @@ const year = new Date().getFullYear();
     <span>&copy; {year} {footerName}</span>
     <div class="flex items-center gap-4">
       {socialLinks.map(({ label, href }) => (
-        <a href={href} class="hover:opacity-80 transition-opacity">{label}</a>
+        <a href={href} class="hover:opacity-80 transition-opacity" data-umami-event="social-click" data-umami-event-platform={label}>{label}</a>
       ))}
-      <a href="/rss.xml" class="hover:opacity-80 transition-opacity" title="RSS feed">RSS</a>
+      <a href="/rss.xml" class="hover:opacity-80 transition-opacity" title="RSS feed" data-umami-event="rss-click">RSS</a>
     </div>
   </div>
 </footer>

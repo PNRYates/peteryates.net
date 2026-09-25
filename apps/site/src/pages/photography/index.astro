@@ -23,7 +23,8 @@ const formatDate = (date: Date) =>
           <div>
             <h3 class="font-semibold mb-1" style="color: var(--color-text);">
               <a href={gallery.data.url} target="_blank" rel="noopener noreferrer"
-                class="hover:opacity-80 transition-opacity">
+                class="hover:opacity-80 transition-opacity"
+                data-umami-event="gallery-click" data-umami-event-gallery={gallery.data.title} data-umami-event-source="photography">
                 {gallery.data.title}
               </a>
             </h3>
@@ -32,6 +33,7 @@ const formatDate = (date: Date) =>
             </p>
           </div>
           <a href={gallery.data.url} target="_blank" rel="noopener noreferrer"
+            data-umami-event="gallery-click" data-umami-event-gallery={gallery.data.title} data-umami-event-source="photography"
             class="gallery-button shrink-0 text-sm font-medium px-4 py-2 rounded border transition-opacity hover:opacity-80"
             style="border-color: var(--color-border); color: var(--color-accent); background: var(--color-surface);">
             Gallery &rarr;
