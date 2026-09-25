@@ -8,6 +8,7 @@
     let activeReference: HTMLAnchorElement | null = null;
     let hideTimer: number | undefined;
     let lastPointerType = 'mouse';
+    const trackedFootnotes = new Set<string>();
 
     const cancelHide = () => window.clearTimeout(hideTimer);
 
@@ -49,6 +50,10 @@
       content.querySelectorAll('[data-footnote-backref]').forEach((backlink) => backlink.remove());
 
       preview.replaceChildren(...content.childNodes);
+      if (!trackedFootnotes.has(footnote.id)) {
+        trackedFootnotes.add(footnote.id);
+        window.umami?.track('footnote-preview', { post: reference.closest<HTMLElement>('[data-post-slug]')?.dataset.postSlug ?? window.location.pathname });
+      }
       preview.hidden = false;
       activeReference = reference;
       positionPreview(reference);

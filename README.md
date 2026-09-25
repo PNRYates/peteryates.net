@@ -147,5 +147,10 @@ MCP image on each content change.
 - **Analytics** is Umami, injected in `src/layouts/Base.astro` for production
   builds with the website ID hardcoded there. `data-domains` limits
   tracking to the production hostname, so previews and local builds don't count.
+  Custom events: `post-read` (50%/100% depth), `outbound-link` (links in post
+  bodies), `footnote-preview`, `gallery-click`, `project-click`, `social-click`,
+  `rss-click`, `theme-toggle`. Track from scripts with `window.umami?.track()`
+  inline; don't put it in a shared module, since a chunk named `analytics.*.js`
+  gets blocked by ad blockers and takes the importing scripts down with it.
 - **Draft filtering** happens at collection load time via `getCollection` filter.
   No special build flag needed; `import.meta.env.DEV` handles it.

@@ -39,7 +39,7 @@ const ogImage = `/og/${post.id}.png`;
   ogImage={ogImage}
   publishedAt={post.data.publishedAt}
 >
-  <article>
+  <article data-post-slug={post.id}>
     <header class="mb-10">
       {post.data.draft && (
         <div class="text-xs font-semibold uppercase tracking-wider mb-4 px-2 py-1 inline-block rounded"
@@ -82,3 +82,41 @@ const ogImage = `/og/${post.id}.png`;
     <FootnotePreviews />
   </article>
 </Base>
+
+<script>
+  const article = document.querySelector<HTMLElement>('[data-post-slug]');
+  const prose = article?.querySelector<HTMLElement>('.prose');
+
+  if (article && prose) {
+    const post = article.dataset.postSlug ?? '';
+
+    // Read depth: fire once each at 50% and at the end of the body text
+    // (footnotes excluded). Only checked on scroll, so a bounce never counts.
+    const milestones = [50, 100];
+    const fired = new Set<number>();
+    const checkDepth = () => {
+      const top = prose.getBoundingClientRect().top + window.scrollY;
+      const footnotes = prose.querySelector<HTMLElement>('[data-footnotes]');
+      const bottom = (footnotes ?? prose).getBoundingClientRect()[footnotes ? 'top' : 'bottom'] + window.scrollY;
+      const progress = ((window.scrollY + window.innerHeight - top) / (bottom - top)) * 100;
+
+      for (const depth of milestones) {
+        if (progress >= depth && !fired.has(depth)) {
+          fired.add(depth);
+          window.umami?.track('post-read', { post, depth });
+        }
+      }
+      if (fired.size === milestones.length) window.removeEventListener('scroll', checkDepth);
+    };
+    window.addEventListener('scroll', checkDepth, { passive: true });
+
+    // Outbound links in the post body. Tagged with Umami's data attributes so
+    // its own click handler sends the event before same-tab navigation.
+    prose.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((link) => {
+      if (link.hostname === window.location.hostname) return;
+      link.dataset.umamiEvent = 'outbound-link';
+      link.dataset.umamiEventPost = post;
+      link.dataset.umamiEventUrl = link.href;
+    });
+  }
+</script>
