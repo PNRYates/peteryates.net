@@ -1,19 +1,21 @@
 ---
-title: "About"
-description: "About Peter Yates"
+title: About
+description: About Peter Yates
 ---
+I'm Peter. Sitting the HSC this year, then Commerce or Commerce/Law at UNSW or USyd.
 
-I'm Peter. Year 12 at Knox Grammar in Sydney, finishing in 2026, then Commerce or Commerce/Law at UNSW or USyd.
+This site is all my public-facing work.
 
-This site is mostly long-form writing on geopolitics and economic history, plus the occasional homelab writeup.
+## Interests
 
-## Currently
-
-- 2026 Prefect at Knox, Wellbeing portfolio
-- Debating in NSW (state callbacks 2025)
-- Writing a piece on Iran's currency crisis for a Dante-themed literary magazine
+* Photography/Videography (see [my work](https://peteryates.net/photography))
+* Philosophy/Ethics (catching up with what EA/rationalist/LessWrong people have been thinking and arguing about before I cared)
+* Debating (on hiatus until uni)
+* F1/Cricket/other sports to a less extent
+* Factorio, Rocket League among other games (HSC getting in the way a bit)
 
 ## Elsewhere
 
-- [peter@peteryates.net](mailto:peter@peteryates.net)
-- [LinkedIn](https://www.linkedin.com/in/peteryates-sydney)
+* [peter@peteryates.net](mailto:peter@peteryates.net)
+* [LinkedIn](https://www.linkedin.com/in/peteryates-sydney)
+* [Twitter](https://x.com/peteryates08)
