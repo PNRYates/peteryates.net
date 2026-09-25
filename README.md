@@ -110,12 +110,7 @@ Two services, one repo. Create them both pointing at this repository.
 | Port | `80` |
 | Domain | `peteryates.net` |
 
-Build variables (tick "Build Variable" in Coolify so they reach `docker build`):
-
-| Variable | Description |
-|----------|-------------|
-| `PUBLIC_UMAMI_WEBSITE_ID` | Umami website ID. Analytics script is omitted when unset |
-| `PUBLIC_UMAMI_SCRIPT_URL` | Optional, defaults to `https://analytics.peteryates.net/script.js` |
+No environment variables required for the site.
 
 ### Service 2 — MCP server
 
@@ -150,7 +145,7 @@ MCP image on each content change.
 - **Tailwind v4** uses the Vite plugin (`@tailwindcss/vite`) rather than
   `@astrojs/tailwind`, which targets v3.
 - **Analytics** is Umami, injected in `src/layouts/Base.astro` for production
-  builds only when `PUBLIC_UMAMI_WEBSITE_ID` is set. `data-domains` limits
+  builds with the website ID hardcoded there. `data-domains` limits
   tracking to the production hostname, so previews and local builds don't count.
 - **Draft filtering** happens at collection load time via `getCollection` filter.
   No special build flag needed; `import.meta.env.DEV` handles it.

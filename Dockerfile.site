@@ -14,12 +14,6 @@ RUN pnpm install --frozen-lockfile --filter site
 # Copy source
 COPY apps/site ./apps/site
 
-# Umami analytics (public values, baked into the static build)
-ARG PUBLIC_UMAMI_WEBSITE_ID
-ARG PUBLIC_UMAMI_SCRIPT_URL
-ENV PUBLIC_UMAMI_WEBSITE_ID=$PUBLIC_UMAMI_WEBSITE_ID
-ENV PUBLIC_UMAMI_SCRIPT_URL=$PUBLIC_UMAMI_SCRIPT_URL
-
 RUN pnpm --filter site build
 
 # ── serve ───────────────────────────────────────────────────────────────────
