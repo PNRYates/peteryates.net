@@ -15,6 +15,8 @@ const year = new Date().getFullYear();
       {socialLinks.map(({ label, href }) => (
         <a href={href} class="hover:opacity-80 transition-opacity" data-umami-event="social-click" data-umami-event-platform={label}>{label}</a>
       ))}
+      <a href="/privacy" class="hover:opacity-80 transition-opacity">Privacy</a>
+      <a href="/terms" class="hover:opacity-80 transition-opacity">Terms</a>
       <a href="/rss.xml" class="hover:opacity-80 transition-opacity" title="RSS feed" data-umami-event="rss-click">RSS</a>
     </div>
   </div>
