@@ -4,6 +4,8 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import FootnotePreviews from '../../components/FootnotePreviews.astro';
 import { readingTime } from '../../lib/reading-time';
+import { formatDate } from '../../lib/dates';
+import { tagSlug } from '../../lib/tags';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const isDev = import.meta.env.DEV;
@@ -17,17 +19,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-const date = post.data.publishedAt.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
-
-const updated = post.data.updatedAt?.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const date = formatDate(post.data.publishedAt);
+const updated = post.data.updatedAt && formatDate(post.data.updatedAt);
 
 const rt = readingTime(post.body ?? '');
 const ogImage = `/og/${post.id}.png`;
@@ -65,7 +58,7 @@ const ogImage = `/og/${post.id}.png`;
         <div class="flex flex-wrap gap-2 mt-4">
           {post.data.tags.map((tag) => (
             <a
-              href={`/tags/${tag}`}
+              href={`/tags/${tagSlug(tag)}`}
               class="text-xs px-2 py-0.5 rounded-full border transition-colors hover:opacity-80"
               style="border-color: var(--color-border); color: var(--color-muted);"
             >

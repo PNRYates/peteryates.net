@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" description="The page you were looking for doesn't exist.">
+  <h1 class="text-2xl font-semibold mb-4" style="color: var(--color-text);">Page not found</h1>
+  <p class="mb-8 leading-relaxed" style="color: var(--color-muted);">
+    The page you were looking for doesn't exist or has moved.
+  </p>
+  <div class="flex flex-wrap gap-5 text-sm">
+    <a href="/" class="font-medium hover:underline" style="color: var(--color-accent);">Home &rarr;</a>
+    <a href="/posts" class="font-medium hover:underline" style="color: var(--color-accent);">Posts &rarr;</a>
+    <a href="/photography" class="font-medium hover:underline" style="color: var(--color-accent);">Photography &rarr;</a>
+  </div>
+</Base>

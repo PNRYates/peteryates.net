@@ -5,14 +5,20 @@ import type { CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { readingTime } from '../../lib/reading-time';
+import { tagSlug } from '../../lib/tags';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const isDev = import.meta.env.DEV;
   const posts = await getCollection('posts', (e) => isDev || !e.data.draft);
-  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
-  return tags.map((tag) => ({
-    params: { tag },
-    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  // Group by slug so tags differing only in case or punctuation share a page.
+  const tags = new Map<string, string>();
+  for (const tag of posts.flatMap((p) => p.data.tags)) {
+    const slug = tagSlug(tag);
+    if (slug && !tags.has(slug)) tags.set(slug, tag);
+  }
+  return [...tags].map(([slug, tag]) => ({
+    params: { tag: slug },
+    props: { tag, posts: posts.filter((p) => p.data.tags.some((t) => tagSlug(t) === slug)) },
   }));
 };
 
