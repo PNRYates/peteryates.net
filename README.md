@@ -9,13 +9,13 @@ Personal site and blog. Monorepo with two apps:
 
 ## Stack
 
-- **Site:** Astro 5, Tailwind v4, MDX, Shiki, KaTeX, satori for OG images
-- **MCP:** Node 20, `@modelcontextprotocol/sdk`, Express, HTTP/SSE transport
+- **Site:** Astro 6, Tailwind v4, MDX, Shiki, KaTeX, satori for OG images
+- **MCP:** Node 22, `@modelcontextprotocol/sdk`, Express, Streamable HTTP (plus legacy SSE)
 - **Deploy:** Docker (multi-stage), Caddy, Coolify
 
 ## Local dev
 
-**Prerequisites:** Node 20+, pnpm 9+
+**Prerequisites:** Node 22.12+, pnpm 9+
 
 ```bash
 # Install deps (run from repo root)
@@ -41,7 +41,9 @@ Content lives in `apps/site/src/content/` as markdown (`.md`) and MDX (`.mdx`) f
 apps/site/src/content/
 ├── posts/        # Blog posts
 ├── projects/     # Project list
-└── resources/    # Curated links
+├── photography/  # Gallery links
+├── pages/        # Homepage and About page
+└── settings/     # Site name, navigation, social links
 ```
 
 Add a new post by creating a file in `posts/` with the required frontmatter:
@@ -73,24 +75,30 @@ remains a static site and does not expose an admin route.
 
 ## MCP server
 
-The MCP server reads the same content at runtime. In development it reads from
-`../../site/src/content` relative to `apps/mcp/`. In production (Docker) it reads
-from wherever `CONTENT_DIR` points — by default `/content`.
+The MCP server reads the same content from the filesystem. In development it reads
+from `../../site/src/content` relative to `apps/mcp/`. In production (Docker) it reads
+from wherever `CONTENT_DIR` points — by default `/content`, which `Dockerfile.mcp`
+bakes into the image at build time. Redeploy the MCP service to pick up new content,
+or mount a volume at `CONTENT_DIR` instead.
 
-**Content volume decision:** The MCP reads content from the filesystem at runtime
-(not baked into the image at build time). This means you can update content without
-rebuilding the MCP image — only the site image needs rebuilding. In Coolify, both
-services mount the same volume.
+### Endpoints
+
+| Path | Description |
+|------|-------------|
+| `POST /mcp` | Streamable HTTP transport (stateless) — use this for new clients |
+| `GET /sse`, `POST /messages` | Legacy HTTP+SSE transport |
+| `GET /health` | Health check |
 
 ### Available tools
 
 | Tool | Description |
 |------|-------------|
 | `list_posts` | List posts, filter by tag/limit/includeDrafts |
-| `get_post` | Get full post by slug |
+| `get_post` | Get full post by slug (drafts only with `includeDrafts`) |
 | `list_projects` | List projects, filter by status |
-| `list_resources` | List resources, filter by category |
-| `search_content` | Full-text search across all content |
+| `list_photography` | List photography galleries, newest first |
+| `get_about` | Get the About page |
+| `search_content` | Full-text search across posts, projects, photography, and About |
 
 ### Auth
 
@@ -107,7 +115,7 @@ Two services, one repo. Create them both pointing at this repository.
 |---------|-------|
 | Build context | `/` (repo root) |
 | Dockerfile path | `apps/site/Dockerfile` |
-| Port | `80` |
+| Port | `3002` |
 | Domain | `peteryates.net` |
 
 No environment variables required for the site.
@@ -117,7 +125,7 @@ No environment variables required for the site.
 | Setting | Value |
 |---------|-------|
 | Build context | `/` (repo root) |
-| Dockerfile path | `apps/mcp/Dockerfile` |
+| Dockerfile path | `Dockerfile.mcp` |
 | Port | `3001` |
 | Domain | `mcp.peteryates.net` (or internal only) |
 
@@ -129,14 +137,9 @@ Environment variables:
 | `CONTENT_DIR` | Path to content directory inside container |
 | `PORT` | Port to listen on (default: `3001`) |
 
-**Shared content volume:** Create a volume in Coolify and mount it at `/content`
-in both services. Copy your `apps/site/src/content/` into the volume on first
-deploy. When you add new content, update the volume and trigger a redeploy of
-the MCP service (the site always rebuilds from source).
-
-Alternatively, bake the content into the MCP image by copying it during the
-Docker build — simpler if you're the only author and don't mind rebuilding the
-MCP image on each content change.
+Content is baked into the MCP image, so redeploy it after content changes. To
+avoid rebuilds, mount a volume containing `apps/site/src/content/` and point
+`CONTENT_DIR` at it.
 
 ## Architectural notes
 

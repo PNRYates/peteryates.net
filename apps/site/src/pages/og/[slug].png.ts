@@ -1,5 +1,5 @@
 import type { GetStaticPaths, APIContext } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { readFileSync } from 'fs';
@@ -7,11 +7,26 @@ import { resolve } from 'path';
 import { createElement as h } from 'react';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getCollection('posts');
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { title: post.data.title, description: post.data.description },
-  }));
+  const isDev = import.meta.env.DEV;
+  const posts = await getCollection('posts', (e) => isDev || !e.data.draft);
+  if (posts.some((post) => post.id === 'default')) {
+    throw new Error('A post slug of "default" would clash with the default OG image');
+  }
+
+  // Fallback image used by Base.astro for pages without their own.
+  const siteSettings = await getEntry('siteSettings', 'site');
+  if (!siteSettings) throw new Error('Site settings are missing');
+
+  return [
+    {
+      params: { slug: 'default' },
+      props: { title: siteSettings.data.siteName, description: siteSettings.data.defaultDescription },
+    },
+    ...posts.map((post) => ({
+      params: { slug: post.id },
+      props: { title: post.data.title, description: post.data.description },
+    })),
+  ];
 };
 
 const loadFont = (path: string): ArrayBuffer => {
@@ -85,7 +100,6 @@ export async function GET({ props }: APIContext) {
   return new Response(png, {
     headers: {
       'Content-Type': 'image/png',
-      'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });
 }

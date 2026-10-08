@@ -1,14 +1,17 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import type { APIContext } from 'astro';
 
 export async function GET(context: APIContext) {
+  const siteSettings = await getEntry('siteSettings', 'site');
+  if (!siteSettings) throw new Error('Site settings are missing');
+
   const posts = await getCollection('posts', (e) => !e.data.draft);
   posts.sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 
   return rss({
-    title: 'Peter Yates',
-    description: 'Personal site of Peter Yates',
+    title: siteSettings.data.siteName,
+    description: siteSettings.data.defaultDescription,
     site: context.site!,
     items: posts.map((post) => ({
       title: post.data.title,
@@ -16,6 +19,6 @@ export async function GET(context: APIContext) {
       pubDate: post.data.publishedAt,
       link: `/posts/${post.id}`,
     })),
-    customData: '<language>en-us</language>',
+    customData: '<language>en-au</language>',
   });
 }

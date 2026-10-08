@@ -7,14 +7,21 @@
     @assets path /_astro/*
     header @assets Cache-Control "public, max-age=31536000, immutable"
 
-    # OG images
+    # OG images: URLs are stable per post, so keep the cache short enough
+    # that title/description edits show up in link previews.
     @og path /og/*
-    header @og Cache-Control "public, max-age=31536000, immutable"
+    header @og Cache-Control "public, max-age=86400"
+
+    # Tag URLs became lowercase slugs
+    redir /tags/AI /tags/ai 301
 
     # HTML: no cache
     @html path *.html /
     header @html Cache-Control "public, max-age=0, must-revalidate"
 
-    # SPA-style 404 fallback
-    try_files {path} {path}/ /404.html
+    # Serve the built 404 page with a real 404 status
+    handle_errors 404 {
+        rewrite * /404.html
+        file_server
+    }
 }
